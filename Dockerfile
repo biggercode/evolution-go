@@ -10,6 +10,15 @@ COPY go.mod go.sum ./
 # Copiar whatsmeow-lib que é uma dependência local
 COPY whatsmeow-lib/ ./whatsmeow-lib/
 
+# Se whatsmeow-lib estiver vazio (comum em CI/CD que não clona submódulos), clonar do repositório
+ARG WHATSMEOW_COMMIT=0923702fb3fac8525241f15331b92116485d69eb
+RUN if [ ! -f whatsmeow-lib/go.mod ]; then \
+        rm -rf whatsmeow-lib && \
+        git clone https://github.com/EvolutionAPI/whatsmeow.git whatsmeow-lib && \
+        cd whatsmeow-lib && \
+        git checkout ${WHATSMEOW_COMMIT}; \
+    fi
+
 # Agora fazer download das dependências (com replace funcionando)
 RUN go mod download
 
