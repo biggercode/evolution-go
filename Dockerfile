@@ -21,10 +21,6 @@ RUN CGO_ENABLED=1 go build -ldflags "-X main.version=${VERSION}" -o server ./cmd
 
 FROM alpine:3.19.1 AS final
 
-# Add this line BEFORE your apk update command
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.cloudflare.com/g' /etc/apk/repositories
-
-# Your existing command
 RUN apk update && apk add --no-cache tzdata ffmpeg libjpeg-turbo libwebp
 
 WORKDIR /app
